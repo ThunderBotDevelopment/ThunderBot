@@ -1301,24 +1301,7 @@ setInterval(() => {
           }
           message.channel.send(ncode);
           break;
-        case prefix+'dick':
-        if (guildSettings.getGuild(message.guild.id).get('ff') == false) {
-          if (message.mentions.users.first()) {
-            message.channel.send("<@"+message.mentions.users.first().id+">'s dick:\n**8"+"=".repeat(getRandom(0,10))+">**");
-          } else {
-            message.channel.send("<@"+message.author.id+">'s dick:\n**8"+"=".repeat(getRandom(0,10))+">**");
-          }
-        }
-          break;
-        case prefix+'pp':
-        if (guildSettings.getGuild(message.guild.id).get('ff') == false) {
-          if (message.mentions.users.first()) {
-            message.channel.send("<@"+message.mentions.users.first().id+">'s pp:\n**8"+"=".repeat(getRandom(0,10))+">**");
-          } else {
-            message.channel.send("<@"+message.author.id+">'s pp:\n**8"+"=".repeat(getRandom(0,10))+">**");
-          }
-        }
-          break;
+       
         case prefix+'rich':
           message.channel.send(new MessageEmbed()
             .setColor(emebdColor)
