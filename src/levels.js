@@ -184,8 +184,6 @@ return out+1;
               });
               var currentLevel = getLevel(xp.getXp(message.author.id,message.guild.id));
               if (currentLevel > previousLevel) {
-                console.log('testing')
-                console.log(guildSettings.getGuild(message.guild.id).get('levelmsgs'))
                 if (guildSettings.getGuild(message.guild.id).get('levelmsgs')) {
                   if (guildSettings.getGuild(message.guild.id).get('levelchannel') == "" || guildSettings.getGuild(message.guild.id).get('levelchannel') == null || guildSettings.getGuild(message.guild.id).get('levelchannel') == "current") {
                 message.channel.send("⬆️ Level UP!  <@"+message.author.id+"> is now at level "+currentLevel)
@@ -256,14 +254,6 @@ if (message.mentions.users.size) {
 	message.channel.send(attachment);
           break;
           */
-        case prefix+'test':
-          console.log(new Xp.Guild(message.guild.id));
-          console.log(new Xp.Guild(message.guild.id).id);
-          var guild = new Xp.Guild(message.guild.id).getUser(message.author.id).xp;
-          console.log(guild);
-
-
-          break;
         case prefix+'card':
         var user;
 if (message.mentions.members.size) {
@@ -412,7 +402,6 @@ if (getLevel(xp.getXp(user.id,message.guild.id)) == 1) {
 } else {
 var first = xp.getXp(user.id,message.guild.id) - getLevelReq(getLevel(xp.getXp(user.id,message.guild.id))-1);
 }
-console.log("FIRST"+ first);
 var second = getLevelReq(getLevel(xp.getXp(user.id,message.guild.id))) - getLevelReq(getLevel(xp.getXp(user.id,message.guild.id))-1);
 
 
@@ -420,7 +409,6 @@ var second = getLevelReq(getLevel(xp.getXp(user.id,message.guild.id))) - getLeve
     if (second > 10000) {
 
         if (second > 1000000) {
-          console.log("millions")
     var next = Math.round(first/1000000)+"m/"+Math.round(second/1000000)+"m";
 
       } else {
@@ -473,7 +461,6 @@ if (getLevel(xp.getXp(user.id,message.guild.id)) == 1) {
 } else {
 var first = xp.getXp(user.id,message.guild.id) - getLevelReq(getLevel(xp.getXp(user.id,message.guild.id))-1);
 }
-console.log("FIRST"+ first);
 var second = getLevelReq(getLevel(xp.getXp(user.id,message.guild.id))) - getLevelReq(getLevel(xp.getXp(user.id,message.guild.id))-1);
 
 var total = first/second*100;
@@ -483,7 +470,6 @@ if (user.displayHexColor == "#000000") {
 } else {
   aaa = user.displayHexColor
 }
-console.log(userSettings.getUser(user.id).get('color') + " is color")
 var clr = userSettings.getUser(user.id).get('color') || guildSettings.getGuild(message.guild.id).get('color') || aaa;
   ctx.strokeStyle = 'rgba('+hexToRgb(clr).r+','+hexToRgb(clr).g+','+hexToRgb(clr).b+',0.95)'
 ctx.beginPath()
@@ -709,7 +695,6 @@ if (getLevel(this.xp) == 1) {
 } else {
 var first = this.xp - getLevelReq(getLevel(this.xp)-1);
 }
-console.log("FIRST"+ first);
 var second = getLevelReq(getLevel(this.xp));
 
 
@@ -717,7 +702,6 @@ var second = getLevelReq(getLevel(this.xp));
     if (second > 10000) {
 
         if (second > 1000000) {
-          console.log("millions")
     var next = Math.round(first/1000000)+"m/"+Math.round(second/1000000)+"m";
 
       } else {
@@ -770,7 +754,6 @@ if (getLevel(this.xp) == 1) {
 } else {
 var first = this.xp - getLevelReq(getLevel(this.xp)-1);
 }
-console.log("FIRST"+ first);
 var second = getLevelReq(getLevel(this.xp));
 
 var total = first/second*100;
