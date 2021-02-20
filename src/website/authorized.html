@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head><meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="icon" href="https://thunderbot.cf/fav.png">
+	<title>ThunderBot Dashboard</title>
+  <style>
+    .hidden {
+      display: none!important;
+    }
+    </style>
+        <link rel="stylesheet" href="assets/css/style.css"></link>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <div id="success" class="hidden">
+
+    <nav class="nav">
+      <ul>
+        <li onclick='window.location.href = "/"'><a href="/">Home</a></li>
+        <li onclick='window.location.href = "https://docs.thunderbot.cf"'><a href="https://docs.thunderbot.cf/">Documentation</a></li>
+        <li style="float:right;" id="account"></li>
+        <img id="avatar" style="width:46px;height:46px;display:block;float:right;border-radius:50%;" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaME9jE-7IQY70AeaYe-FkqyMtTknZiwCC8w&usqp=CAU">
+      </ul>
+    </nav>
+    <h1>Your Dashboard</h1>
+    <p>The ThunderBot web dashboard is coming soon.</p>
+    <p>Once it's complete, you'll be able to change the prefix, toggle settings, and more for all of your servers.</p>
+    <div id="settings" class="hidden">
+      <div id="selectedserver">
+
+        </div>
+      <label>Server Prefix </label><input placeholder="Prefix" id="prefix">
+      <br>
+      
+      <button onclick="closeSettings()">Close</button>
+    </div>
+      <div id="servercollection">
+
+        </div>
+    </div>
+	<div id="info">
+
+	</div>
+	<a id="login" style="display: none;" href="https://discord.com/api/oauth2/authorize?client_id=783743297453686795&redirect_uri=https%3A%2F%2Fthundebot.yodacode.repl.co%2Fauthorized&response_type=code&scope=guilds%20identify">Identify
+		Yourself</a>
+	<script>
+		var connectionID = %%connectionID%%;
+		function generateRandomString() {
+			const rand = Math.floor(Math.random() * 10);
+			let randStr = '';
+
+			for (let i = 0; i < 20 + rand; i++) {
+				randStr += String.fromCharCode(33 + Math.floor(Math.random() * 94));
+			}
+
+			return randStr;
+		}
+
+		window.onload = () => {
+			const fragment = new URLSearchParams(window.location.hash.slice(1));
+
+			if (fragment.has("access_token")) {
+				const urlState = fragment.get("state");
+				const stateParameter = localStorage.getItem('stateParameter');
+				if (stateParameter !== atob(decodeURIComponent(urlState))) {
+					return console.log('You may have been clickjacked!');
+				}
+
+				const accessToken = fragment.get("access_token");
+				const tokenType = fragment.get("token_type");
+
+				fetch('https://discord.com/api/users/@me', {
+					headers: {
+						authorization: `${tokenType} ${accessToken}`
+					}
+				})
+					.then(res => res.json())
+					.then(response => {
+						console.log(response);
+						const { username, discriminator } = response;
+						document.getElementById('info').innerText += ` ${username}#${discriminator}`;
+					})
+					.catch(console.error);
+
+			}
+			else {
+				const randStr = generateRandomString();
+				localStorage.setItem('stateParameter', randStr);
+
+				document.getElementById('login').href += `&state=${encodeURIComponent(btoa(randStr))}`;
+				//document.getElementById('login').style.display = 'block';
+			}
+		}
+
+	</script>
+
+	<script src="/socket.io/socket.io.js">
+	</script>
+	<script>
+    var g;
+		var socket = io();
+    var userdata;
+    if (connectionID) {
+      //
+    } else {
+      location.replace('https://discord.com/api/oauth2/authorize?client_id=783743297453686795&redirect_uri=https%3A%2F%2Fthundebot.yodacode.repl.co%2Fauthorized&response_type=code&scope=guilds%20identify')
+    }
+    socket.on('userdata', (data) => {
+      userdata = data;
+      $("#account").text(data.username)
+    });
+    socket.on('avatar', (avatar) => {
+      userdata.avatar = avatar;
+          document.getElementById('avatar').src = userdata.avatar;
+    });
+    socket.on('guilds', (guilds) => {
+      g = guilds;
+      console.log(guilds);
+      var q = "";
+      var ok = Object.keys(guilds);
+      var ov = Object.values(guilds);
+      for (var i = 0; i < ok.length; i++) {
+        var q = q + `<div class="server" onclick="openGuild('${ok[i]}')"><img src="${ov[i].avatar || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaME9jE-7IQY70AeaYe-FkqyMtTknZiwCC8w&usqp=CAU"}" draggable="false"><p>${ov[i].name || "Server"}</p></div>`;
+      }
+      $("#servercollection").html(q)
+    });
+    socket.on('reload', () => {
+      location.reload();
+    });
+    socket.on('getprefix', (prefix) => {
+      console.log(prefix);
+      $("#prefix").val(prefix || "!");
+      $("#servercollection").addClass("hidden");
+      $("#settings").removeClass("hidden");
+    });
+    socket.emit('guilds',connectionID)
+    socket.emit('userdata',connectionID);
+    socket.emit('avatar',connectionID);
+    $("#success").removeClass('hidden');
+    setTimeout(() => {
+      if (userdata.avatar) {
+        
+      } else {
+      location.replace('https://discord.com/api/oauth2/authorize?client_id=783743297453686795&redirect_uri=https%3A%2F%2Fthundebot.yodacode.repl.co%2Fauthorized&response_type=code&scope=guilds%20identify')
+      }
+    },2000);
+    function openGuild(id) {
+      socket.emit('getprefix',''+id+'')
+      console.log(id);
+      $("#selectedserver").html(`<div class="server" onclick="closeSettings();"><img src="${g[id].avatar || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaME9jE-7IQY70AeaYe-FkqyMtTknZiwCC8w&usqp=CAU"}" draggable="false"><p>${g[id].name || "Server"}</p></div>`)
+    }
+    function closeSettings() {
+      $("#servercollection").removeClass("hidden");
+      $("#settings").addClass("hidden");
+    }
+	</script>
+
+</body>
+
+</html>
