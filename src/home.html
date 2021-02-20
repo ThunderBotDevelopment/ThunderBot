@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+      <title>Files</title>
+		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+
+		<style>
+			@font-face {
+  font-family: "San Francisco";
+  font-weight: 400;
+  src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-bold-webfont.woff");
+}
+			body {font-family: 'Open Sans', sans-serif;
+			background-color: #333333;	
+			}
+			#cars {
+				font-family: 'Open Sans', sans-serif;
+				border: 1px solid #777777;
+			padding: 10px;
+				cursor: pointer;
+				background-color: #222222;
+				color: #ffffff;
+				border-radius: 6px;
+				margin: 10px;
+				width: 600px;
+			}
+			li p img {
+			width: 50px;
+				display: inline-block;
+				border-radius: 25px;
+			}
+			li p span {
+				display: inline-block;
+				padding: 15px 10px 15px 10px;
+				vertical-align: top;
+			}
+			li p {
+			display: block;	
+			}
+			
+			input {
+				font-family: 'Open Sans', sans-serif;
+				border: 1px solid #777777;
+			padding: 10px;
+				background-color: #222222;
+				color: #ffffff;
+				border-radius: 6px;
+				margin: 10px;
+				width: 600px;
+			}
+			button {
+				font-family: 'Open Sans', sans-serif;
+				border: 1px solid #777777;
+			padding: 10px;
+				cursor: pointer;
+				background-color: #222222;
+				color: #ffffff;
+				border-radius: 6px;
+				margin: 10px;
+			}
+			div.a {
+			background-color: #222222;
+				border-radius: 6px;
+			}
+			ul li {
+			margin: 5px 5px 5px 5px;
+				border-bottom: solid 1px white;	
+			}
+			ul.hide-bullets {
+				font-family: 'Open Sans', sans-serif;
+				    list-style-type: none;
+			}
+		</style>
+    </head>
+    <body>
+      
+      <center>
+		  <h1 style="color:white;">Console Access</h1>
+		  <input type="password" id="password" name="password" placeholder="Password"><button onclick="checkPassword();">Continue</button>
+		</center>
+		
+		
+		<script>
+			let password = "blank";
+			var socket = io();
+			function checkPassword() {
+				
+				
+				password = document.getElementById("password").value;
+				
+				if (password == "private") {
+					
+				location.replace("/general");	
+				}
+				socket.emit("checkPassword", {
+					pw: password
+				});
+				document.getElementById("password").value = "";
+				
+				
+			}
+			socket.on("passwordReturn", (object) => {
+				
+				if (object.pw == password) {
+				
+					if (object.status == "correct") {
+						eval(object.return);
+						
+					} else {
+						alert("Incorrect password!!");
+						
+					}
+					
+					
+					
+				}
+				
+				
+			});
+			
+		</script>
+    </body>
+  </html>

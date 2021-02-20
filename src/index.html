@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+      <title>Files</title>
+		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+        <link href="https://du11hjcvx0uqb.cloudfront.net/br/dist/images/favicon-e10d657a73.ico" rel="icon">
+        <script src="/socket.io/socket.io.js"></script>
+		<style>
+			@font-face {
+  font-family: "San Francisco";
+  font-weight: 400;
+  src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-bold-webfont.woff");
+}
+
+			/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
+			body {font-family: 'Open Sans', sans-serif;
+			background-color: #333333;
+			}
+			#cars {
+				font-family: 'Open Sans', sans-serif;
+				border: 1px solid #777777;
+			padding: 10px;
+				cursor: pointer;
+				background-color: #222222;
+				color: #ffffff;
+				border-radius: 6px;
+				margin: 10px;
+				width: 600px;
+			}
+			li p img {
+			width: 50px;
+				display: inline-block;
+				border-radius: 25px;
+				cursor:pointer;
+			}
+			li p span {
+				display: inline-block;
+				padding: 15px 10px 15px 10px;
+				vertical-align: top;
+			}
+
+			li p span.status {
+				cursor: pointer;				border: 1px solid #777777;
+
+				border-radius: 4px;
+				display: inline-block;
+				padding: 15px 10px 15px 10px;
+				float:right;
+			}
+			li p span.delete {
+				cursor: pointer;				border: 1px solid #777777;
+
+				border-radius: 4px;
+				display: inline-block;
+				padding: 15px 10px 15px 10px;
+				float:right;
+			}
+			li p {
+			display: block;
+			}
+
+			input, textarea {
+				font-family: 'Open Sans', sans-serif;
+				border: 1px solid #777777;
+			padding: 10px;
+				background-color: #222222;
+				color: #ffffff;
+				border-radius: 6px;
+				margin: 10px;
+				width: 600px;
+				resize: none;
+				overflow: hiddden;
+			/*	height: 38px!important;*/
+			}
+			button {
+				font-family: 'Open Sans', sans-serif;
+				border: 1px solid #777777;
+			padding: 10px;
+				cursor: pointer;
+				background-color: #222222;
+				color: #ffffff;
+				border-radius: 6px;
+				margin: 10px;
+			}
+			div.a {
+			background-color: #222222;
+				border-radius: 6px;
+			}
+			ul li {
+			margin: 5px 5px 5px 5px;
+				border-bottom: solid 1px white;
+			}
+			ul.hide-bullets {
+				font-family: 'Open Sans', sans-serif;
+				    list-style-type: none;
+			}
+		</style>
+    </head>
+    <body>
+		<div id="typingindicator" style="width:100px;height:10px;float:right;display:none;">Typing</div>
+
+		<div> <input placeholder="Message" type="text" id="msgbox" onkeypress="handle(event);"><button onclick="adminPing();">Send</button><select name="cars" id="cars">
+			
+
+
+
+
+
+			</select><button onclick="link();">Link</button></div>
+
+		<div class="a" style="color:white;padding:10px;margin:10px;font-size:14px;">
+				<ul class="hide-bullets" id="messagewindow" style="padding:0px;"><li style="border:none;">Message history will appear here</li></ul>
+		</div>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <p>Some text in the Modal..</p>
+  </div>
+
+</div>
+
+
+      <script src="/socket.io/socket.io.js"></script>
+      <script>
+		  let msgLog = ["1"];
+
+        var socket = io();
+		  typing();
+let msg = "blank at the moment";
+let chanhistory = "blank";
+ function handle(e){
+        if(e.keyCode === 13){
+            e.preventDefault(); // Ensure it is only this code that rusn
+
+            adminPing();
+        }
+
+
+        if(e.keyCode === 9){
+            e.preventDefault(); // Ensure it is only this code that rusn
+alert("yes");
+            newLine();
+        }
+ }
+
+
+        function adminPing() {
+          var mssg = document.getElementById('msgbox').value;
+          var channel = document.getElementById('cars').value;
+          socket.emit("serversidejs", {
+            a: channel,
+            command: mssg
+          })
+          document.getElementById('msgbox').value = "";
+        }
+        socket.on("channelList", (object) => {
+      var fff = [];
+      for (var i = 0; i < object.array.length; i++) {
+          fff.push({
+              id: object.array[i].id,
+              name: object.array[i].name,
+              type: object.array[i].type,
+              guild: object.array[i].guild
+          });
+      }
+      console.log(fff);
+      var innerds = "";
+      for (var i = 0; i < fff.length; i++) {
+          if (fff[i].type == "text") {
+              innerds = innerds + '<option value="' + fff[i].id + '">#' + fff[i].name + ' (' + httpGet(location.protocol + '//' + location.host + '/guild/' +fff[i].guild) + ')</option>';
+          }
+      }
+      document.getElementById("cars").innerHTML = innerds;
+  });
+  socket.emit('getChannels');
+		  socket.on('newMessage', object => {/*
+			  alert(object.info.content);*/
+
+
+
+			  msg = object;
+			  chanTest(object.chan, object.chanid);
+			  var finalmsg = "#" + object.chan + " (" + object.chanid + "), " + object.user + " >    " + object.info.content;
+			 // document.getElementById("messagewindow").innerText = finalmsg;
+
+
+
+
+
+			  /*
+
+			var newItem = document.createElement("LI");       // Create a <li> node
+var textnode = document.createTextNode(finalmsg);  // Create a text node
+newItem.appendChild(textnode);                    // Append the text to <li>
+
+var list = document.getElementById("messagewindow");    // Get the <ul> element to insert a new node
+list.insertBefore(newItem, list.childNodes[0]);  // Insert <li> before the first child of <ul>
+
+
+
+			  */
+			  var item = msgLog.length;
+
+			  msgLog.push(object.info);
+
+
+			  var list = document.getElementById("messagewindow");
+			  if (object.icon == null) {
+				  list.innerHTML = "<li><p><img title='" + "#" + object.chan + " (" + object.chanid + "), @" + object.user + " (" + object.info.authorID + ") - Click to copy ID' onclick='ping(" + '"' + object.info.authorID + '"' + ");' src='" + object.info.defaultAvatarURL + "'><span><b>" + object.chan + ", " + object.user + " > </b>" + object.info.content + "</span><span class='delete' onclick='dm(" + item + ");'>Delete</span><span class='status' onclick='status(" + '"' + object.info.authorID + '"' + ");'>Mention</span></p></li>" + list.innerHTML;
+			  } else {
+			  list.innerHTML = "<li><p><img onclick='ping(" + '"' + object.info.authorID + '"' + ");' title='" + "#" + object.chan + " (" + object.chanid + "), @" + object.user + " (" + object.info.authorID + ") - Click to copy ID' src='" + object.icon + "'><span><b>" + object.chan + ", " + object.user + " > </b>" + object.info.content + "</span><span class='delete' onclick='dm(" + item + ");'>Delete</span><span class='status' onclick='status(" + '"' + object.info.authorID + '"' + ");'>Mention</span></p></li>" + list.innerHTML;
+			  }
+
+
+
+
+
+			  if (focused == false) {
+				alert("ping pls");
+			  }
+
+
+
+		  });
+
+		  socket.on("ping", object => {
+			  alert("URGENT PING > " + object.time);
+		  });
+
+
+		  let focused = true;
+
+window.onfocus = function() {
+    focused = true;
+};
+window.onblur = function() {
+    focused = false;
+};
+
+		  function chanTest(c, d) {
+			  if (chanhistory == c) {
+
+			  } else {
+				  /*
+			var newItem = document.createElement("LI");
+
+				  // Create a <li> node
+var textnode = document.createTextNode("#" + c + " (" + d + ")");  // Create a text node
+newItem.appendChild(textnode);                    // Append the text to <li>
+
+var list = document.getElementById("messagewindow");    // Get the <ul> element to insert a new node
+list.insertBefore(newItem, list.childNodes[0]);   */
+				  chanhistory = c;
+			  }
+
+		  }
+function status(p) {
+document.getElementById("msgbox").value = document.getElementById("msgbox").value + " <@" + p + ">";
+	document.getElementById("msgbox").focus();
+}
+
+		  function ping(s) {
+			  prompt("Here is the user info: ", s);
+
+			  let statusrequest = s;
+		  }
+		   function pingold(s) {
+			  alert('test');
+			socket.emit("getStatus", {
+				user: s
+			});
+			  let statusrequest = s;
+
+		  }
+
+
+		  socket.on("status", object => {
+			  alert('recieved');
+			 if (object.user == statusrequest) {
+			alert(status);
+
+			 }
+
+
+		  });
+		  function pinggg(d) {
+			  socket.emit("serversidejs", {
+            a: d,
+            command: "The bot has been pinged."
+          });
+		  }
+
+		  function link() {
+			  var select = document.getElementById("cars");
+
+			  if (select.value.substring(0,1) == "@") {
+
+			  document.getElementById("msgbox").value = document.getElementById("msgbox").value + " <" + select.value + ">";
+
+			  } else {
+			  document.getElementById("msgbox").value = document.getElementById("msgbox").value + " <#" + select.value + ">";
+
+
+			  }
+		  }
+
+
+
+
+
+
+
+
+
+		// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+		function newLine() {
+		document.getElementById("msgbox").value = document.getElementById("msgbox").value + "\r\n";
+
+		}
+		  function typing() {
+			  socket.emit("getTyping");
+			setTimeout(function(){ typing(); }, 500);
+		  }
+
+		  socket.on("typing", object => {
+			  if (object.status) {
+			  document.getElementById("typingindicator").style.display = none;
+			  } else {
+			  document.getElementById("typingindicator").style.display = none;
+			  }
+		  });
+		  function dm(m) {
+			socket.emit("messageAction", {
+				message: msgLog[m],
+				action: "delete"
+
+						});
+		  }
+      function httpGet(theUrl)
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+}
+      </script>
+    </body>
+  </html>
