@@ -74,6 +74,12 @@ const applyText = (canvas, text) => {
 	return ctx.font;
 };
 
+if (!("CLIENT_SECRET" in process.env)) {
+  throw new Error("Client Secret is not specificed")
+}
+if (!("CLIENT_ID" in process.env)) {
+  throw new Error("Client ID is not specificed")
+}
 
 const vm = require('vm');
 
@@ -652,12 +658,6 @@ var errorTypes = {
 
 var errorLogs = [];
 
-if (!("CLIENT_SECRET" in process.env)) {
-  throw new Error("Client Secret is not specificed")
-}
-if (!("CLIENT_ID" in process.env)) {
-  throw new Error("Client ID is not specificed")
-}
 
 client.commands = new Discord.Collection();
 
