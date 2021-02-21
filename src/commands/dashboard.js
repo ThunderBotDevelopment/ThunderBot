@@ -11,7 +11,7 @@ module.exports = {
       message.channel.send(new Discord.MessageEmbed()
         .setColor(options.emebdColor)
         .setTitle("Server Dashboard")
-        .setDescription("Access the dashboard for all your servers that use ThunderBot [right here](https://discord.com/oauth2/authorize?client_id=783743297453686795&redirect_uri=https%3A%2F%2Fthunderbot.cf%2Fauthorized&response_type=code&scope=guilds%20identify)!")
+        .setDescription(`Access the dashboard for all your servers that use ThunderBot [right here](https://discord.com/oauth2/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=https%3A%2F%2Fthunderbot.cf%2Fauthorized&response_type=code&scope=guilds%20identify)!`)
       );
 	}
 };

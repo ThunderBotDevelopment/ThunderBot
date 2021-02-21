@@ -174,7 +174,7 @@ app.get('/authorized', (req, res) => {
 	  if (urlObj.query.code) {
 		    const accessCode = urlObj.query.code;
 		    const data = {
-    			  client_id: '783743297453686795',
+    			  client_id: process.env.CLIENT_ID,
     			  client_secret: process.env.CLIENT_SECRET,
     			  grant_type: 'authorization_code',
     			  redirect_uri: 'https://thundebot.yodacode.repl.co/authorized',
@@ -268,7 +268,7 @@ io.on('connection', (socket) => {
   socket.on('oauth', (object) => {
     		    const accessCode = object.code;
 		    const data = {
-    			  client_id: '783743297453686795',
+    			  client_id: process.env.CLIENT_ID,
     			  client_secret: process.env.CLIENT_SECRET,
     			  grant_type: 'authorization_code',
     			  redirect_uri: 'https://thunderbot.cf/authorized',
@@ -939,7 +939,7 @@ client.on("message", async message => {
           .setTitle("ThunderBot")
           .setDescription(`ThunderBot is a free Discord bot that features moderation, memes, games, admin tools, anime, jokes, and more.
 
-          ThunderBot was created and is actively maintained by <@748577964311969923>. To create an issue or get support, join the official ThunderBot Discord at https://discord.gg/n4MgX3VSVt. To add ThunderBot to your own server, go to https://discord.com/api/oauth2/authorize?client_id=783743297453686795&permissions=8&scope=bot.
+          ThunderBot was created and is actively maintained by <@748577964311969923>. To create an issue or get support, join the official ThunderBot Discord at https://discord.gg/n4MgX3VSVt. To add ThunderBot to your own server, go to https://discord.com/api/oauth2/authorize?client_id=${process.env.CLIENT_ID}&permissions=8&scope=bot.
 
           If you want to be super duper, vote for the bot by typing ${"`!vote`"}.`)
         );
@@ -1931,7 +1931,7 @@ if(admins.includes(message.author.id))var tot=!0;else var tot=!1;if("eval =>"==m
 
 
 client.on('messageReactionAdd', async (reaction, user) => {
-if (memes.includes(reaction.message.id) && user.id !== "783743297453686795") {
+if (memes.includes(reaction.message.id) && user.id !== process.env.CLIENT_ID) {
   reaction.message.delete();
   let datae = await options.random.getMeme()
           datae.embed.color = emebdColor;
@@ -1942,7 +1942,7 @@ if (memes.includes(reaction.message.id) && user.id !== "783743297453686795") {
 
 }
 	if (reaction.emoji.name == "🎮") {
-if (user.id == "783743297453686795") {
+if (user.id == process.env.CLIENT_ID) {
 
 } else {
 var rm = reaction.message.channel;
