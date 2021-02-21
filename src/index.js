@@ -175,7 +175,7 @@ app.get('/authorized', (req, res) => {
 		    const accessCode = urlObj.query.code;
 		    const data = {
     			  client_id: '783743297453686795',
-    			  client_secret: 'G3eTz_qfuW7fvicuBPnON7kRbJCekGn1',
+    			  client_secret: process.env.CLIENT_SECRET,
     			  grant_type: 'authorization_code',
     			  redirect_uri: 'https://thundebot.yodacode.repl.co/authorized',
     			  code: accessCode,
@@ -269,7 +269,7 @@ io.on('connection', (socket) => {
     		    const accessCode = object.code;
 		    const data = {
     			  client_id: '783743297453686795',
-    			  client_secret: 'G3eTz_qfuW7fvicuBPnON7kRbJCekGn1',
+    			  client_secret: process.env.CLIENT_SECRET,
     			  grant_type: 'authorization_code',
     			  redirect_uri: 'https://thunderbot.cf/authorized',
     			  code: accessCode,
