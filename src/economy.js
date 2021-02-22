@@ -140,7 +140,7 @@ setInterval(() => {
       "Barack Obama",
       "Joe Biden",
       "Hillary Clinton",
-      "<@783743297453686795>",
+      `<@${process.env.CLIENT_ID}>`,
       "Gabe Itch",
       "Sally",
       "Tom Nook",
